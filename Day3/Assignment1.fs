@@ -23,13 +23,10 @@ let rec findNotDotOrDigitAroundChar (str : string) width absoluteX absoluteY num
 
     offsetRec -1 -1        
 
-let rec findStringNumber (numberWithString : string) =
-    if numberWithString.Length = 0 then
-        ""
-    elif Char.IsDigit(numberWithString.[0]) then 
-        string numberWithString.[0] + findStringNumber(numberWithString.[1..])
-    else
-        ""
+let rec findStringNumber = function
+    | "" -> ""
+    | str when Char.IsDigit str.[0] -> string str.[0] + findStringNumber str.[1..]
+    | _ -> ""
 
 findStringNumber "123..1"
 |> printfn "%s"
