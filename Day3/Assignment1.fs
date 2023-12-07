@@ -1,10 +1,62 @@
 ﻿open System
 open System.IO
 
+let rec findStringNumber = function
+    | str when Char.IsDigit (str |> Seq.head) -> 
+        Seq.append
+            (findStringNumber (str |> Seq.skip 1))
+            (Seq.singleton (str |> Seq.head))
+    | _ -> Seq.empty
+
+let containsNutsOrBolts =
+    Seq.exists (fun ch -> ch <> '.' || ch <> '\n' || not (Char.IsDigit ch))
+
+let checkRow (str : char seq) i checkLength =
+    str
+    |> Seq.skip (Math.Max(0, i))
+    |> Seq.truncate checkLength
+    |> containsNutsOrBolts
+    
+let checkNumberSchematic (schematic : string) width i numLength =
+    checkRow schematic (i - 1) (numLength + 2)
+    || checkRow schematic (i - 1 - width) (numLength + 2)
+    || checkRow schematic (i - 1 + width) (numLength + 2)
+
+let iterateNumbersInSchematic (schematic : string) width =
+    let rec iterateRec i =
+        if i >= schematic.Length then
+            0
+        else
+            (
+            if Char.IsDigit schematic.[i] then
+                let num = findStringNumber schematic.[i..] |> string
+                if checkNumberSchematic schematic width i num.Length then
+                    (num |> int)
+                else
+                    0
+            else
+                0
+            ) + iterateRec (i + 1)
+
+    iterateRec 0
+
+let sumSchematicNumbers (schematic : string) =
+    iterateNumbersInSchematic schematic (schematic.IndexOf '\n' + 1)
+
+File.ReadAllText "input.txt"
+|> sumSchematicNumbers
+|> printfn "%d"
+
+
+findStringNumber "123..1"
+|> string
+|> printfn "%s"
+
+(*
 let to1D (x : int) (y : int) (width : int) : int =
     y * width + x
 
-let rec findNotDotOrDigitAroundChar (str : string) width absoluteX absoluteY numberLength =
+let findNotDotOrDigitAroundChar (str : string) width absoluteX absoluteY numberLength =
     let rec offsetRec offsetX offsetY =
         let x = offsetX + absoluteX
         let y = offsetY + absoluteY
@@ -21,16 +73,7 @@ let rec findNotDotOrDigitAroundChar (str : string) width absoluteX absoluteY num
 
             (ch <> '.' && ch <> '\n' && not (Char.IsDigit ch)) || offsetRec (offsetX + 1) offsetY
 
-    offsetRec -1 -1        
-
-let rec findStringNumber = function
-    | "" -> ""
-    | str when Char.IsDigit str.[0] -> string str.[0] + findStringNumber str.[1..]
-    | _ -> ""
-
-findStringNumber "123..1"
-|> printfn "%s"
-
+    offsetRec -1 -1
 
 let rec iterate2Dstring width height x y (str : string) =
     if x = width then
@@ -57,3 +100,4 @@ let calculateEngineSchematic (str : string) =
 File.ReadAllText "input.txt"
 |> calculateEngineSchematic
 |> printfn "%d"
+*)
