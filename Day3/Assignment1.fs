@@ -7,11 +7,11 @@ let rec findStringNumber = function
     | _ -> ""
 
 let containsNutsOrBolts =
-    Seq.exists (fun ch -> ch <> '.' || ch <> '\n' || not (Char.IsDigit ch))
+    Seq.exists (fun ch -> ch <> '.' && ch <> '\n' && not (Char.IsDigit ch))
 
 let checkRow (str : char seq) i checkLength =
     str
-    |> Seq.skip (Math.Max(0, i))
+    |> Seq.skip (Math.Min(Math.Max(0, i), Seq.length str))
     |> Seq.truncate checkLength
     |> containsNutsOrBolts
     
@@ -25,17 +25,15 @@ let iterateNumbersInSchematic (schematic : string) width =
         if i >= schematic.Length then
             acc
         else
-            let newAcc =
-                if Char.IsDigit schematic.[i] then
-                    let num = findStringNumber (Seq.skip i schematic)
-                    if checkNumberSchematic schematic width i num.Length then
-                        acc + (num |> int)
-                    else
-                        acc
+            if Char.IsDigit schematic.[i] then
+                let num = findStringNumber (Seq.skip i schematic)
+                if checkNumberSchematic schematic width i num.Length then
+                    iterateRec (i + num.Length) (acc + (num |> int))
                 else
-                    acc
+                    iterateRec (i + 1) acc
+            else
+                iterateRec (i + 1) acc
             
-            iterateRec (i + 1) newAcc
 
     iterateRec 0 0
     
