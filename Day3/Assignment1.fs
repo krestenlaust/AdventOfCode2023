@@ -1,6 +1,7 @@
 ﻿open System
 open System.IO
 
+// 534316
 let rec findStringNumber = function
     | str when Char.IsDigit (str |> Seq.head) -> 
         string (str |> Seq.head) + findStringNumber (str |> Seq.skip 1)
@@ -33,7 +34,6 @@ let iterateNumbersInSchematic (schematic : string) width =
                     iterateRec (i + 1) acc
             else
                 iterateRec (i + 1) acc
-            
 
     iterateRec 0 0
     
