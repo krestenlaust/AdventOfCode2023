@@ -10,19 +10,21 @@ let rec findStringNumber = function
         string (str |> Seq.head) + findStringNumber (str |> Seq.skip 1)
     | _ -> ""
 
-let rowStart i width =
+let rowStart (i : int) (width : int) : int =
     i - i % width
 
-let rowEnd i width =
+let rowEnd i width : int =
     rowStart i width + width
 
 let containsNutsOrBolts =
     Seq.exists (fun ch -> ch <> '.' && ch <> '\n' && not (Char.IsDigit ch))
 
 let checkRow (str : char seq) (width : int) i checkLength =
+    let startIndex = clamp (rowStart i width) (rowEnd i width) i
+    let endIndex = clamp (rowStart i width) (rowEnd i width) (i + checkLength)
     str
-    |> Seq.skip(clamp(rowStart(i, width), rowEnd(i, width), i))
-    |> Seq.truncate checkLength
+    |> Seq.skip startIndex
+    |> Seq.truncate (endIndex - startIndex)
     |> containsNutsOrBolts
     
 let checkNumberSchematic (schematic : string) width i numLength =
