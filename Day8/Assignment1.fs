@@ -9,12 +9,12 @@ printfn "Hello from F#"
 
 type Entry = {Left: string; Right: string}
 
-let mapNavigator (steps : char list) (graph : Map<string, Entry>) : int =
+let mapNavigator (steps : char seq) (graph : Map<string, Entry>) : int =
     let rec recursive i (currentEntry : string) =
         if currentEntry = "ZZZ" then
             i
         else
-            if steps.[i] = 'R' then
+            if steps. = 'R' then
                 recursive (i + 1) (Map.find currentEntry graph).Right
             else
                 recursive (i + 1) (Map.find currentEntry graph).Left
