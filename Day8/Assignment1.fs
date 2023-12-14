@@ -19,7 +19,7 @@ let mapNavigator (steps : char list) (graph : Map<string, Entry>) : int =
             else
                 recursive (i + 1) (Map.find currentEntry graph).Left
 
-    recursive 0
+    recursive 0 "AAA"
 
 let graphGenerator (rawGraph : string) : Map<string, Entry> =
     Map.ofList [("AAA", {Left = "BBB"; Right = "BBB"});
